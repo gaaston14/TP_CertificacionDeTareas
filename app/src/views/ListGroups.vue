@@ -46,7 +46,7 @@
     },
     methods: {
       groupEdit(groupNum, techniciansIds) {
-        this.$router.push({ name: 'EditarGrupos', params: { id, techniciansIds } })
+        this.$router.push({ name: 'EditarGrupos', params: { groupNum, techniciansIds } })
       }
     }
   }

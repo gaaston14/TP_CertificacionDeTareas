@@ -2,20 +2,20 @@
   <v-container fluid>
     <v-row >
       <v-col v-for="(item, index) in items" :key="index" cols="3">
-        <v-card outlined>
-          <v-card-title>{{ item.name }}</v-card-title>
+        <v-card outlined data-cy="technician-card">
+          <v-card-title data-cy="technician-name">{{ item.name }}</v-card-title>
           <v-card-text>
             <v-row>
               <v-col cols="6">Codigo:</v-col>
-              <v-col cols="6">{{ item.id }}</v-col>
+              <v-col cols="6" data-cy="technician-id">{{ item.id }}</v-col>
             </v-row>
             <v-row>
               <v-col cols="6">Fecha de Nacimiento:</v-col>
-              <v-col cols="6">{{ item.date_born.substring(0,10) }}</v-col>
+              <v-col cols="6" data-cy="technician-date-born">{{ item.date_born.substring(0,10) }}</v-col>
             </v-row>
           </v-card-text>
           <v-card-actions>
-            <v-btn color="primary" @click="editarTecnico(item.id)">Modificar</v-btn>
+            <v-btn color="primary" @click="editarTecnico(item.id)" data-cy="modify-button">Modificar</v-btn>
           </v-card-actions>
         </v-card>
       </v-col>

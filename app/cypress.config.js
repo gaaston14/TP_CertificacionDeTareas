@@ -6,7 +6,7 @@ module.exports = defineConfig({
       // implement node event listeners here
     },
     baseUrl: "http://localhost:8080",
-    "fixturesFolder": "./api/mocks"
+    "fixturesFolder": "./api-mocks/mocks"
   },
 
   component: {

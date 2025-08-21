@@ -1,5 +1,6 @@
 const { Sequelize, DataTypes } = require('sequelize')
 const { mysql } = require('./configs/config')
+const mysql2 = require('mysql2');
 
 const UserModel = require('./models/user')
 const TechnicianModel = require('./models/technician')
@@ -10,17 +11,24 @@ const GroupTaskModel = require('./models/group_task')
 const GroupTechnicianModel = require('./models/group_technician')
 
 const sequelize = new Sequelize(
-  mysql.database,
-  mysql.user,
-  mysql.password,
+  process.env.MYSQL_DB,
+  process.env.MYSQL_USER,
+  process.env.MYSQL_PASSWORD,
   {
-    host: mysql.host,
-    port: mysql.port,
+    host: process.env.MYSQL_HOST,
+    port: Number(process.env.MYSQL_PORT || 3306),
     dialect: 'mysql',
+    dialectModule: mysql2,
     timezone: '-03:00',
+    pool: { max: 10, min: 0, acquire: 60000, idle: 10000 },
     dialectOptions: {
-      ssl: mysql.ssl
-    }
+      ssl: {
+        require: true,
+        rejectUnauthorized: false,
+        servername: process.env.MYSQL_HOST
+      }
+    },
+    logging: false
   }
 );
 
@@ -46,6 +54,14 @@ GroupTechnician.belongsTo(Technician)
 
 GroupTask.belongsTo(Group)
 GroupTask.belongsTo(Task)
+
+console.log('DB cfg ->', {
+  host: process.env.MYSQL_HOST,
+  port: process.env.MYSQL_PORT,
+  user: process.env.MYSQL_USER,
+  db:   process.env.MYSQL_DB
+});
+
 
 if (process.env.NODE_ENV !== 'production') {
   sequelize.sync({ alter: true })

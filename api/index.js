@@ -14,7 +14,6 @@ const corsOptions = {
     return cb(new Error('Not allowed by CORS'));
   },
   methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
-  allowedHeaders: ['Content-Type','Authorization'],
   credentials: false,
   optionsSuccessStatus: 204
 };

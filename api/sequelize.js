@@ -15,10 +15,14 @@ const sequelize = new Sequelize(
   mysql.password,
   {
     host: mysql.host,
+    port: mysql.port,
     dialect: 'mysql',
-    timezone: '-03:00'
+    timezone: '-03:00',
+    dialectOptions: {
+      ssl: mysql.ssl
+    }
   }
-)
+);
 
 const User = UserModel(sequelize, DataTypes)
 const Technician = TechnicianModel(sequelize, DataTypes)
@@ -43,13 +47,15 @@ GroupTechnician.belongsTo(Technician)
 GroupTask.belongsTo(Group)
 GroupTask.belongsTo(Task)
 
-sequelize.sync({ alter: true })
+if (process.env.NODE_ENV !== 'production') {
+  sequelize.sync({ alter: true })
   .then(() => {
     console.log('Models sync successfully')
   })
   .catch((error) => {
     console.error('Error in syncing:', error)
   })
+}
 
 const connectDB = async () => {
   try {

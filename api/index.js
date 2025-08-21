@@ -4,8 +4,24 @@ const cors = require('cors')
 const app = express()
 const cookieParser = require('cookie-parser')
 
+const allowedOrigins = [
+  'https://tp-certificaciondetareas-front.onrender.com',
+  'http://localhost:8080'
+];
+const corsOptions = {
+  origin(origin, cb) {
+    if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
+    return cb(new Error('Not allowed by CORS'));
+  },
+  methods: ['GET','POST','PUT','PATCH','DELETE','OPTIONS'],
+  allowedHeaders: ['Content-Type','Authorization'],
+  credentials: false,
+  optionsSuccessStatus: 204
+};
 
-app.use(cors())
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
+
 app.use(express.json({ extended: true }))
 app.use(cookieParser())
 

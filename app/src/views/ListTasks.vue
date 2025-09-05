@@ -124,11 +124,25 @@
         }
       },
       getDisplayTask(task) {
+        if (!task.prices || task.prices.length === 0) {
+          return {
+            id: task.id,
+            name: task.name,
+            price: 0
+          };
+        }
+        const sortedPrices = [...task.prices].sort(
+          (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+
+        const today = new Date();
+        const activePrice = sortedPrices.find(p => new Date(p.createdAt) <= today);
+
         return {
           id: task.id,
           name: task.name,
-          price: task.prices.length > 0 ? task.prices.at(0).price : 0
-        }
+          price: activePrice ? activePrice.price : 0
+        };
       }
     }
   }

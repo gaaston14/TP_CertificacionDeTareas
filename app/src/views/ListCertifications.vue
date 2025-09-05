@@ -124,6 +124,7 @@
 </template>
 
 <script>
+  import moment from 'moment-timezone'
   import TechnicianService from '../services/TechnicianService'
   import GroupTaskService from '../services/GroupTaskService'
 
@@ -141,7 +142,7 @@
         headers: [
           { text: 'Técnicos', value: 'group.technicians', formatter: (x) => x.map((t) => t.name).join(', ') },
           { text: 'Tarea', value: 'task.name' },
-          { text: 'Cumplimiento', value: 'date_completed' },
+          { text: 'Cumplimiento', value: 'date_completed', formatter: (x) => (x ? moment.tz(x, "YYYY-MM-DD HH:mm:ss", "America/Argentina/Buenos_Aires").format("DD-MM-YYYY") : null) },
           { text: 'Hora', value: 'hour', formatter: (x) => (x ? x.slice(0, 5) : null) },
           { text: 'Conexión', value: 'conection' },
           { text: 'Observación', value: 'observation' },

@@ -45,21 +45,29 @@ const getGroupTasks = async (req, res) => {
       ]
     })
     const groupTasksPrice = groupTasks.map(groupTask => {
-      const task = groupTask.task
-      const filteredPrices = task.prices.filter(price => new Date(price.createdAt) <= new Date(`${groupTask.date_completed.toISOString().substring(0, 10)} ${groupTask.hour}`))
-      const latestPrice = filteredPrices.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0]
-      const filterTechnicians = groupTask.group.technicians.filter(technician => {
+      const task = groupTask.task ?? null;
+      const group = groupTask.group ?? null;
+
+      const dateCompleted = new Date(`${groupTask.date_completed}T${groupTask.hour}`);
+
+      const filteredPrices = task?.prices?.filter(price =>
+        new Date(price.createdAt) <= dateCompleted
+      ) || [];
+
+      const latestPrice = filteredPrices.sort(
+        (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+      )[0];
+
+      const filterTechnicians = group?.technicians?.filter(technician => {
         let gt = technician.groups_technicians
         let date_assigned = new Date(gt.date_assigned)
         let date_end = gt.date_end ? new Date(gt.date_end) : null
-        let date_completed = new Date(`${groupTask.date_completed.toISOString().substring(0, 10)} ${groupTask.hour}`)
+        let date_completed = dateCompleted
         console.log(date_assigned, date_completed, date_end)
         return date_assigned <= date_completed && (!date_end || date_end >= date_completed)
       })
-      console.log("filterTechnicians")
-      console.log(filterTechnicians)
 
-      if (filterTechnicians.length === 0) return null
+      if (!group || filterTechnicians.length === 0) return null;
 
       return {
         groupId: groupTask.groupId,
@@ -81,7 +89,8 @@ const getGroupTasks = async (req, res) => {
           price: latestPrice?.price
         }
       }
-    })
+    }).filter(Boolean)
+
     res.status(200).json(groupTasksPrice)
   } catch (error) {
     console.log(error)
